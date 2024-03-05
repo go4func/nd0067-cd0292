@@ -1,11 +1,8 @@
 import type { NextFunction, Response, Request } from 'express';
 import { resizeImg } from './../../utilities/sharp';
 import fs from 'fs/promises';
-import { originalImage, resizedImage } from '../../utilities/file';
-import {
-  getImageQueryParams,
-  standardizeQueryParams,
-} from '../../utilities/request';
+import { getImagePath } from '../../utilities/file';
+import { getImageQueryParams } from '../../utilities/request';
 
 const resize = async (req: Request, res: Response, next: NextFunction) => {
   const queryParams = getImageQueryParams(req);
@@ -16,7 +13,7 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   // check if original file exists
-  const original = originalImage(queryParams.filename);
+  const original = getImagePath(queryParams.filename, 0, 0);
   try {
     await fs.access(original, fs.constants.F_OK);
   } catch (err) {
@@ -30,10 +27,12 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  standardizeQueryParams(queryParams);
-
   // check if resized file exists, if not then resize
-  const resized = resizedImage(queryParams);
+  const resized = getImagePath(
+    queryParams.filename,
+    queryParams.width,
+    queryParams.height,
+  );
   try {
     await fs.access(resized, fs.constants.F_OK);
   } catch (err) {

@@ -8,15 +8,11 @@ export interface ImageQueryParams {
 
 // get query params from request
 const getImageQueryParams = (req: Request): ImageQueryParams => {
-  const filename: string = req.query.filename as string;
-  const width: number = parseInt(req.query.width as string);
-  const height: number = parseInt(req.query.height as string);
+  const filename = req.query.filename ? (req.query.filename as string) : '';
+  const width = req.query.width ? parseInt(req.query.width as string) : 0;
+  const height = req.query.height ? parseInt(req.query.height as string) : 0;
 
-  return { filename, width, height };
-};
-
-// if 1 dimension is missing, use the other
-const standardizeQueryParams = (params: ImageQueryParams): ImageQueryParams => {
+  const params = { filename, width, height } as ImageQueryParams;
   if (!params.width && !params.height) {
     return params;
   }
@@ -30,4 +26,4 @@ const standardizeQueryParams = (params: ImageQueryParams): ImageQueryParams => {
   return params;
 };
 
-export { getImageQueryParams, standardizeQueryParams };
+export { getImageQueryParams };

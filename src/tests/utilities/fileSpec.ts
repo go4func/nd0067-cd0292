@@ -1,22 +1,13 @@
-import { originalImage, resizedImage } from '../../utilities/file';
-import type { ImageQueryParams } from '../../utilities/request';
+import { getImagePath } from '../../utilities/file';
 
 describe('Test file utilities', () => {
-  describe('function originalImage return the path to original image file', () => {
-    it('should contain the correct path', () => {
-      expect(originalImage('fjord')).toContain('/images/fjord.jpg');
+  describe('function getImagePath return the path to image file', () => {
+    it('should return the file with no resized resolution', () => {
+      expect(getImagePath('fjord', 0, 0)).toContain('/images/fjord.jpg');
     });
-  });
-
-  describe('function resizedImage return the path to resized image file', () => {
-    it('should contain the correct path', () => {
-      const params: ImageQueryParams = {
-        filename: 'fjord',
-        width: 600,
-        height: 300,
-      };
-      expect(resizedImage(params)).toContain(
-        `/images/fjord_${params.width}_${params.height}.jpg`,
+    it('should return the file with resized sizes provided', () => {
+      expect(getImagePath('fjord', 1000, 500)).toContain(
+        '/images/fjord_1000_500.jpg',
       );
     });
   });

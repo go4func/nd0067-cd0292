@@ -1,10 +1,5 @@
-import {
-  getImageQueryParams,
-  standardizeQueryParams,
-} from '../../utilities/request';
-
+import { getImageQueryParams } from '../../utilities/request';
 import type { ImageQueryParams } from '../../utilities/request';
-
 import type { Request } from 'express';
 
 describe('Test request utilities', () => {
@@ -25,39 +20,6 @@ describe('Test request utilities', () => {
       expect(getImageQueryParams(request as unknown as Request)).toEqual(
         params,
       );
-    });
-  });
-
-  describe('function standardizeQueryParams standardizes request params', () => {
-    it('should return if both width and height are null', () => {
-      const params = {
-        filename: 'fjord',
-      };
-      expect(standardizeQueryParams(params as ImageQueryParams)).toEqual({
-        filename: 'fjord',
-      } as ImageQueryParams);
-    });
-    it('should use height when width is empty', () => {
-      const params = {
-        filename: 'fjord',
-        height: 300,
-      };
-      expect(standardizeQueryParams(params as ImageQueryParams)).toEqual({
-        filename: 'fjord',
-        width: 300,
-        height: 300,
-      });
-    });
-    it('should use width when height is empty', () => {
-      const params = {
-        filename: 'fjord',
-        width: 500,
-      };
-      expect(standardizeQueryParams(params as ImageQueryParams)).toEqual({
-        filename: 'fjord',
-        width: 500,
-        height: 500,
-      });
     });
   });
 });
