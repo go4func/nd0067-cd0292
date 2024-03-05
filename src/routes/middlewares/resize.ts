@@ -2,19 +2,21 @@ import type { NextFunction, Response, Request } from 'express';
 import { resizeImg } from './../../utilities/sharp';
 import fs from 'fs/promises';
 import { originalImage, resizedImage } from '../../utilities/file';
+import {
+  getImageQueryParams,
+  standardizeQueryParams,
+} from '../../utilities/request';
 
 const resize = async (req: Request, res: Response, next: NextFunction) => {
-  const filename: string = req.query.filename as string;
-  let width: number = parseInt(req.query.width as string);
-  let height: number = parseInt(req.query.height as string);
+  const queryParams = getImageQueryParams(req);
 
-  if (!filename) {
+  if (!queryParams.filename) {
     res.status(400).send('missing filename');
     return;
   }
 
   // check if original file exists
-  const original = originalImage(filename);
+  const original = originalImage(queryParams.filename);
   try {
     await fs.access(original, fs.constants.F_OK);
   } catch (err) {
@@ -22,28 +24,23 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  // if there's no resolution params, then continue to image endpoint
-  if (!width && !height) {
+  // if there's no addition params of resolution, then continue to image endpoint
+  if (!queryParams.width && !queryParams.height) {
     next();
     return;
   }
 
-  // if 1 dimension is missing, use the other
-  if (!width) {
-    width = height;
-  }
-  if (!height) {
-    height = width;
-  }
+  standardizeQueryParams(queryParams);
 
-  // check if resize file exists, if not then resize
-  const resized = resizedImage(filename, width, height);
+  // check if resized file exists, if not then resize
+  const resized = resizedImage(queryParams);
   try {
     await fs.access(resized, fs.constants.F_OK);
   } catch (err) {
-    await resizeImg(original, resized, width, height);
+    await resizeImg(original, resized, queryParams.width, queryParams.height);
   }
 
+  // next handler
   next();
 };
 
