@@ -21,5 +21,40 @@ describe('Test request utilities', () => {
         params,
       );
     });
+    it('should throw err: missing filename', () => {
+      const request = {
+        query: {
+          width: '600',
+          height: '300',
+        },
+      };
+      expect(function () {
+        getImageQueryParams(request as unknown as Request);
+      }).toThrow(new Error('missing filename'));
+    });
+    it('should throw err: invalid height', () => {
+      const request = {
+        query: {
+          filename: 'fjord',
+          width: '600',
+          height: 'dsfsf',
+        },
+      };
+      expect(function () {
+        getImageQueryParams(request as unknown as Request);
+      }).toThrow(new Error('invalid height'));
+    });
+    it('should throw err: invalid width', () => {
+      const request = {
+        query: {
+          filename: 'fjord',
+          width: 'sdfdf',
+          height: '300',
+        },
+      };
+      expect(function () {
+        getImageQueryParams(request as unknown as Request);
+      }).toThrow(new Error('invalid width'));
+    });
   });
 });

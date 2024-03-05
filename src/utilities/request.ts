@@ -12,6 +12,16 @@ const getImageQueryParams = (req: Request): ImageQueryParams => {
   const width = req.query.width ? parseInt(req.query.width as string) : 0;
   const height = req.query.height ? parseInt(req.query.height as string) : 0;
 
+  if (!filename) {
+    throw new Error('missing filename');
+  }
+  if (isNaN(width) || width < 0) {
+    throw new Error('invalid width');
+  }
+  if (isNaN(height) || height < 0) {
+    throw new Error('invalid height');
+  }
+
   const params = { filename, width, height } as ImageQueryParams;
   if (!params.width && !params.height) {
     return params;

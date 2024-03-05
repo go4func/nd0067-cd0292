@@ -5,11 +5,25 @@
 ### /api/images
 
 > to get the images by name with optional sizes as parameters
-> Example
+
+Example:
 
 ```
 /api/images?filename=fjord&width=600&height=300
 ```
+
+- filename is required.
+- width and height are optional:
+  - both are unavailable: response the original images in images/full folder.
+  - one is unavailable: value will be equal to available one.
+  - both are available: response the resized images in images/thumb folder.
+
+Errors
+
+- `missing filename`: filename is required.
+- `invalid filename`: resource is not found.
+- `invalid width`: width is not number or negative
+- `invalid height`: height is not number or negative
 
 ## Resources
 

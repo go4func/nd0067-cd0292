@@ -19,10 +19,24 @@ describe('Test Image routes', () => {
       expect(response.status).toBe(400);
       expect(response.text).toEqual('missing filename');
     });
-    it('should response with status 404: not found', async () => {
+    it('should response with status 400: invalid width', async () => {
+      const response = await request.get(
+        '/api/images?filename=fjord&width=adsfdf&height=300',
+      );
+      expect(response.status).toBe(400);
+      expect(response.text).toEqual('invalid width');
+    });
+    it('should response with status 400: invalid height', async () => {
+      const response = await request.get(
+        '/api/images?filename=fjord&width=500&height=abad',
+      );
+      expect(response.status).toBe(400);
+      expect(response.text).toEqual('invalid height');
+    });
+    it('should response with status 404: invalid filename', async () => {
       const response = await request.get('/api/images?filename=notavailable');
       expect(response.status).toBe(404);
-      expect(response.text).toEqual('not found');
+      expect(response.text).toEqual('invalid filename');
     });
   });
 });

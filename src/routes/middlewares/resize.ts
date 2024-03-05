@@ -3,12 +3,15 @@ import { resizeImg } from './../../utilities/sharp';
 import fs from 'fs/promises';
 import { getImagePath } from '../../utilities/file';
 import { getImageQueryParams } from '../../utilities/request';
+import type { ImageQueryParams } from '../../utilities/request';
 
 const resize = async (req: Request, res: Response, next: NextFunction) => {
-  const queryParams = getImageQueryParams(req);
-
-  if (!queryParams.filename) {
-    res.status(400).send('missing filename');
+  // parse and validate request params
+  let queryParams = {} as ImageQueryParams;
+  try {
+    queryParams = getImageQueryParams(req);
+  } catch (err) {
+    res.status(400).send((err as Error).message);
     return;
   }
 
@@ -17,7 +20,7 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await fs.access(fullImage, fs.constants.F_OK);
   } catch (err) {
-    res.status(404).send('not found');
+    res.status(404).send('invalid filename');
     return;
   }
 
@@ -36,6 +39,7 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await fs.access(thumbImage, fs.constants.F_OK);
   } catch (err) {
+    console.log(`generate new image ${thumbImage}`);
     await resizeImg(
       fullImage,
       thumbImage,
