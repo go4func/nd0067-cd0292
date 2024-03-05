@@ -1,3 +1,4 @@
+import path from 'path';
 import { getImagePath } from '../../utilities/file';
 
 describe('Test file utilities', () => {
@@ -7,17 +8,17 @@ describe('Test file utilities', () => {
     });
     it('should return the file with resized sizes provided', () => {
       expect(getImagePath('fjord', 1000, 500)).toContain(
-        '/images/thumb/fjord_1000_500.jpg',
+        path.join('images', 'thumb', 'fjord_1000_500.jpg'),
       );
     });
     it('should return the file with resized width provided', () => {
       expect(getImagePath('fjord', 1000, 0)).toContain(
-        '/images/thumb/fjord_1000_1000.jpg',
+        path.join('images', 'thumb', 'fjord_1000_1000.jpg'),
       );
     });
     it('should return the file with resized height provided', () => {
       expect(getImagePath('fjord', 0, 500)).toContain(
-        '/images/thumb/fjord_500_500.jpg',
+        path.join('images', 'thumb', 'fjord_500_500.jpg'),
       );
     });
   });
