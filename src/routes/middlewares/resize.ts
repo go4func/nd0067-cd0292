@@ -1,10 +1,9 @@
-import { NextFunction, Response, Request } from 'express';
-import path from 'path';
+import type { NextFunction, Response, Request } from 'express';
 import { resizeImg } from './../../utilities/sharp';
 import fs from 'fs/promises';
+import { originalImage, resizedImage } from '../../utilities/file';
 
 const resize = async (req: Request, res: Response, next: NextFunction) => {
-  const imagesDir = '../../../images';
   const filename: string = req.query.filename as string;
   let width: number = parseInt(req.query.width as string);
   let height: number = parseInt(req.query.height as string);
@@ -15,7 +14,7 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   // check if original file exists
-  const original = path.join(__dirname, imagesDir, `${filename}.jpg`);
+  const original = originalImage(filename);
   try {
     await fs.access(original, fs.constants.F_OK);
   } catch (err) {
@@ -38,11 +37,7 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   // check if resize file exists, if not then resize
-  const resized = path.join(
-    __dirname,
-    imagesDir,
-    `${filename}_${width}_${height}.jpg`,
-  );
+  const resized = resizedImage(filename, width, height);
   try {
     await fs.access(resized, fs.constants.F_OK);
   } catch (err) {

@@ -1,19 +1,16 @@
 import express from 'express';
-import path from 'path';
+import { originalImage, resizedImage } from '../../utilities/file';
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  const imagesDir = '../../../images';
   const filename: string = req.query.filename as string;
   let width: number = parseInt(req.query.width as string);
   let height: number = parseInt(req.query.height as string);
 
   // if there's no resolution params, serve the original file
   if (!width && !height) {
-    res
-      .status(200)
-      .sendFile(path.join(__dirname, imagesDir, `${filename}.jpg`));
+    res.status(200).sendFile(originalImage(filename));
     return;
   }
 
@@ -25,11 +22,8 @@ router.get('/', (req, res) => {
     height = width;
   }
 
-  res
-    .status(200)
-    .sendFile(
-      path.join(__dirname, imagesDir, `${filename}_${width}_${height}.jpg`),
-    );
+  // serve the resized file
+  res.status(200).sendFile(resizedImage(filename, width, height));
 });
 
 export default router;
