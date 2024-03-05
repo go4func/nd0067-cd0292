@@ -1,10 +1,11 @@
 import express from 'express';
 import { getImagePath } from '../../utilities/file';
 import { getImageQueryParams } from '../../utilities/request';
+import type { Request, Response } from 'express';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   const queryParams = getImageQueryParams(req);
 
   res
