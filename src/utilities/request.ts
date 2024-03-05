@@ -17,6 +17,9 @@ const getImageQueryParams = (req: Request): ImageQueryParams => {
 
 // if 1 dimension is missing, use the other
 const standardizeQueryParams = (params: ImageQueryParams): ImageQueryParams => {
+  if (!params.width && !params.height) {
+    return params;
+  }
   if (!params.width) {
     params.width = params.height;
   }
