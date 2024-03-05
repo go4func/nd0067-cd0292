@@ -12,10 +12,10 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  // check if original file exists
-  const original = getImagePath(queryParams.filename, 0, 0);
+  // check if full image exists
+  const fullImage = getImagePath(queryParams.filename, 0, 0);
   try {
-    await fs.access(original, fs.constants.F_OK);
+    await fs.access(fullImage, fs.constants.F_OK);
   } catch (err) {
     res.status(404).send('not found');
     return;
@@ -27,16 +27,21 @@ const resize = async (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  // check if resized file exists, if not then resize
-  const resized = getImagePath(
+  // check if thumb file exists, if not then resize
+  const thumbImage = getImagePath(
     queryParams.filename,
     queryParams.width,
     queryParams.height,
   );
   try {
-    await fs.access(resized, fs.constants.F_OK);
+    await fs.access(thumbImage, fs.constants.F_OK);
   } catch (err) {
-    await resizeImg(original, resized, queryParams.width, queryParams.height);
+    await resizeImg(
+      fullImage,
+      thumbImage,
+      queryParams.width,
+      queryParams.height,
+    );
   }
 
   // next handler

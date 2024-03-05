@@ -7,7 +7,6 @@ const router = express.Router();
 router.get('/', (req, res) => {
   const queryParams = getImageQueryParams(req);
 
-  // serve the resized file
   res
     .status(200)
     .sendFile(
